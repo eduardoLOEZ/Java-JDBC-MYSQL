@@ -1,23 +1,50 @@
 package org.example.course.main;
 
+import com.mysql.cj.protocol.Resultset;
+
 import java.sql.*;
 
 public class Main {
     public static void main(String[] args) throws SQLException {
-        //definimos los myConn para hacer la conexión con el DriverManager
-        //el statement con preparedStatement para las consultas complejas con parametros
-        //y myRes para mostrar la respuesta de un SELCT
-        Connection myConn = null;
-        PreparedStatement myStmt = null;
-        Statement myStateS = null;
-        ResultSet myRes = null; // Usar java.sql.ResultSet
+
+
+        // Definir la consulta y los parámetros
+        String sqlQuery = "SELECT * FROM employees WHERE age > ?";
+        int parameter = 25;
+
+        // Definir la consulta de inserción y los parámetros
+        String sqlInsert = "INSERT INTO employees (name, age, email) VALUES (?, ?, ?)";
+        String name = "juan";
+        int age = 23;
+        String email = "juan@gmail.com";
+
+        // Definir la consulta de actualización y los parámetros
+        String sqlUpdate = "UPDATE employees SET age = ?, email = ? WHERE name = ?";
+        int newAge = 30;
+        String newEmail = "juan@example.com";
+        String targetName = "juan";
+
+        // Definir la consulta de eliminación y el parámetro
+        String sqlDelete = "DELETE FROM employees WHERE id = ?";
+        int idToDelete = 1;
 
         String url = "jdbc:mysql://localhost:3306/project";
         String user = "root";
         String password = "123456";
 
-        try {
-            myConn = DriverManager.getConnection(url, user, password);
+        try(
+                // Establecer la conexión a la base de datos
+                Connection myConn = DriverManager.getConnection(url, user, password);
+                // Crear un Statement para el SELECT
+                Statement myStateS = myConn.createStatement();
+                // Crear un PreparedStatement para el INSERT
+                PreparedStatement myStmtInsert = myConn.prepareStatement(sqlInsert);
+                // Crear un PreparedStatement para el UPDATE
+                PreparedStatement myStmtUpdate = myConn.prepareStatement(sqlUpdate);
+                // Crear un PreparedStatement para el DELETE
+                PreparedStatement myStmtDelete = myConn.prepareStatement(sqlDelete);
+                ) {
+
             System.out.println("DB connected");
 
             /*
@@ -58,7 +85,7 @@ public class Main {
 
             //UPDATE AN EMPLOYEE
             //WHERE ES EL INDEX, EL CAMPO EN EL QUE SE HACE LA BUSQUEDA
-            String updateSql = "UPDATE employees SET age = ?, email = ? WHERE name = ?";
+            //String updateSql = "UPDATE employees SET age = ?, email = ? WHERE name = ?";
             /*
 
             myStmt = myConn.prepareStatement();
@@ -68,12 +95,17 @@ public class Main {
             myStmt.setString(3, "Jane Doe");
              */
 
-            /*Ejecutar la actualización
-            int rowsAffected = myStmt.executeUpdate();
+            //Ejecutar la actualización
+
+            myStmtUpdate.setInt(1, newAge);
+            myStmtUpdate.setString(2, newEmail);
+            myStmtUpdate.setString(3, targetName);
+
+            int rowsAffected = myStmtUpdate.executeUpdate();
             System.out.println("Rows Affected: " + rowsAffected);
 
 
-             */
+
 
             //ELIMINAR UN REGISTRO
 
@@ -94,22 +126,18 @@ public class Main {
             //COLOCAMOS DESPUES EL SELECT PARA PODER VER LOS CAMBIOS DEL UPDATE
             //un select from
             //DEBEMOS DE CREAR EL STATEMENT ANTES DE HACER LA QUERY, DEBEMOS INICIALIZARLO, PARA PODER USARLO.
-            myStateS = myConn.createStatement();
-            myRes = myStateS.executeQuery("SELECT * FROM employees");
+            // Ejecutar la consulta SELECT
 
-            while(myRes.next()){
+            // Ejecutar la consulta SELECT
+            try (ResultSet myRes = myStateS.executeQuery("SELECT * FROM employees")) {
+                while (myRes.next()) {
+                    int id = myRes.getInt("id");
+                    String empName = myRes.getString("name");
+                    int empAge = myRes.getInt("age");
+                    String empEmail = myRes.getString("email");
 
-                int id = myRes.getInt("id");
-                String name = myRes.getString("name");
-                int age = myRes.getInt("age");
-                String email = myRes.getString("email");
-                //System.out.println(myRes.getString("name"));
-                //solo va hacer get de la columna "name"
-
-                System.out.println("ID: " + id + ", Name: " + name + ", Age: " + age + ", Email: " + email);
-
-
-
+                    System.out.println("ID: " + id + ", Name: " + empName + ", Age: " + empAge + ", Email: " + empEmail);
+                }
             }
 
 
