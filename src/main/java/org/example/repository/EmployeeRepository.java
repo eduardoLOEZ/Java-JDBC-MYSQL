@@ -23,6 +23,9 @@ public class EmployeeRepository implements Repository<Employee> {
     //Ejecuta la consulta SQL SELECT * FROM employees.
     //Itera sobre el ResultSet, creando un objeto Employee para cada registro y agregándolo a la lista.
     //Devuelve la lista employees que contiene todos los objetos Employee recuperados.
+
+    //como es un metodo sobrescrito, debe de estar igual como en la interface Repository
+    //pero va a tener un comportamiento distinto.
     @Override
     public List<Employee> findAll() throws SQLException {
         List<Employee> employees = new ArrayList<>();
