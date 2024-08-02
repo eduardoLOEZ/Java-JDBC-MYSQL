@@ -8,8 +8,6 @@ import java.sql.*;
 public class Main {
 
 
-
-
     public void run() throws SQLException{
         // Definir la consulta y los parámetros
         String sqlQuery = "SELECT * FROM employees WHERE age > ?";
