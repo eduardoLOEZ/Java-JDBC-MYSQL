@@ -1,13 +1,16 @@
 package org.example.course.main;
 
 import com.mysql.cj.protocol.Resultset;
+import org.example.util.DataBaseConnection;
 
 import java.sql.*;
 
 public class Main {
-    public static void main(String[] args) throws SQLException {
 
 
+
+
+    public void run() throws SQLException{
         // Definir la consulta y los parámetros
         String sqlQuery = "SELECT * FROM employees WHERE age > ?";
         int parameter = 25;
@@ -28,13 +31,9 @@ public class Main {
         String sqlDelete = "DELETE FROM employees WHERE id = ?";
         int idToDelete = 1;
 
-        String url = "jdbc:mysql://localhost:3306/project";
-        String user = "root";
-        String password = "123456";
-
         try(
-                // Establecer la conexión a la base de datos
-                Connection myConn = DriverManager.getConnection(url, user, password);
+                // Establecer la conexión a la base de datos con Singleton pattern:
+                Connection myConn = DataBaseConnection.getInstance();
                 // Crear un Statement para el SELECT
                 Statement myStateS = myConn.createStatement();
                 // Crear un PreparedStatement para el INSERT
@@ -43,7 +42,7 @@ public class Main {
                 PreparedStatement myStmtUpdate = myConn.prepareStatement(sqlUpdate);
                 // Crear un PreparedStatement para el DELETE
                 PreparedStatement myStmtDelete = myConn.prepareStatement(sqlDelete);
-                ) {
+        ) {
 
             System.out.println("DB connected");
 
@@ -145,5 +144,19 @@ public class Main {
             e.printStackTrace();
             System.out.println("error while connecting to the DB");
         }
+
+    }
+
+
+    public static void main(String[] args) throws SQLException {
+
+        Main app = new Main();
+
+        try{
+            app.run();
+        } catch (SQLException e){
+            e.printStackTrace();
+        }
+
     }
 }
