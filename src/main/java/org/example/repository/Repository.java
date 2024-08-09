@@ -11,5 +11,9 @@ public interface Repository<T> {
 
     void save(T t);
 
+    void update(Integer id, T t) throws SQLException;
+
     void delete(Integer id);
+
+    List<T> findEmployeesPagination(int pageNumber, int pageSize) throws SQLException;
 }
