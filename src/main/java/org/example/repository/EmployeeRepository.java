@@ -9,6 +9,16 @@ import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
+
+//Polimorfismo runtime
+/*
+Polimorfismo se aplica aquí mediante la sobrescritura de los métodos definidos
+en la interfaz Repository (findAll, getById, save, delete, update y findEmployeesPagination).
+La clase EmployeeRepository proporciona su propia implementación de estos métodos.
+
+ */
+
+
 public class EmployeeRepository implements Repository<Employee> {
 
     //este metodo llama a DataBaseConnection.getInstance, el cual retorna la conexion
@@ -82,14 +92,27 @@ public class EmployeeRepository implements Repository<Employee> {
     @Override
     public Employee getById(Integer id){
 
+        //definimos la query que vamos a usar para traer un registro por id
         String sql = "SELECT * FROM employees WHERE id = ?";
 
+        //preparamos la consulta SQL para la ejecucion
+        //PreparedStatement es un obj que representa la consulta preparada
+        //Esto permite establecer parámetros dinámicos (como el id),
+
+        //try facilita la gestión de recursos, hace que cualquier recurso que se abra aqui
+        //se cierre automaticamente al final del bloque try
         try(PreparedStatement psmt = myConn.prepareStatement(sql)){
 
+            //asignamos el valor id al parametro de la consulta
+            //establece el primer parametro ? en la query del valor id
             psmt.setInt(1,id);
 
+
+            //ejecuta la consulta y obtiene los resultados
             try( ResultSet rs = psmt.executeQuery()){
 
+                //rs.next() mueve el cursor al primer registro(en este caso solo hay uno)
+                //si eiste, extraemos sus campos y se utilizan para crear una instancia de Employee
                 if(rs.next()){
                     return new Employee(
                             rs.getInt("id"),

@@ -2,6 +2,16 @@ package org.example.model;
 
 public class Employee {
 
+    //Encapsulacion
+
+    /*
+
+    Encapsulación se aplica aquí al hacer que los atributos id, name, age y email sean private.
+     Esto oculta los detalles internos del objeto Employee, y solo se permite el acceso a través de los métodos públicos (getId, getName, etc.).
+     Los datos sensibles están protegidos, y el acceso y la modificación de estos datos están controlados a través de los getters y el constructor.
+
+     */
+
     //Atributos de la clase
     private Integer id;
 
